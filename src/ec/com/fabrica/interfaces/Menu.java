@@ -90,6 +90,11 @@ public class Menu extends javax.swing.JFrame {
         menArchivo.add(itmEmpleados);
 
         itmClientes.setText("Clientes");
+        itmClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmClientesActionPerformed(evt);
+            }
+        });
         menArchivo.add(itmClientes);
 
         itmProveedores.setText("Proveedores");
@@ -140,6 +145,13 @@ public class Menu extends javax.swing.JFrame {
         jDesktopPane1.add(e);
         e.show();
     }//GEN-LAST:event_itmEmpleadosActionPerformed
+
+    private void itmClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmClientesActionPerformed
+        // TODO add your handling code here:
+        Clientes e = new Clientes();
+        jDesktopPane1.add(e);
+        e.show();
+    }//GEN-LAST:event_itmClientesActionPerformed
 
     /**
      * @param args the command line arguments
