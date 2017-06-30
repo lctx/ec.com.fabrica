@@ -5,7 +5,7 @@
  */
 package ec.com.fabrica.interfaces;
 
-import com.mysql.jdbc.Connection;
+import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,9 +17,9 @@ import javax.swing.JOptionPane;
 
 public class conexion {
 
-    Connection connect = null;
+    private Connection connect;
 
-    Statement st = null;
+    Statement st ;
 
     public Connection conectar() {
         try {
@@ -59,12 +59,11 @@ public class conexion {
                 INGRESO.setString(i + 1, campos[i]);
             }
             INGRESO.executeUpdate();
-
             INGRESO.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error sql");
-            System.out.println("ingreso fallido");
+            JOptionPane.showMessageDialog(null, "FALLÓ LA CONEXIÓN \n" + e);
+
         }
 
     }
@@ -78,6 +77,7 @@ public class conexion {
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "FALLÓ LA ELIMINACION \n" + e);
         }
     }
 
@@ -89,14 +89,15 @@ public class conexion {
             rs = stmt.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "NO SE REALIZO LA CONSULTA\n" + e);
             return null;
         }
         return rs;
     }
-    
-    public ResultSet consultar(String tabla, String cam_consultar,String consulta) {
+
+    public ResultSet consultar(String tabla, String cam_consultar, String consulta) {
         ResultSet rs = null;
-        String sql = "SELECT * FROM " + tabla+" WHERE "+cam_consultar+" = "+consulta;
+        String sql = "SELECT * FROM " + tabla + " WHERE " + cam_consultar + " = " + consulta;
         try {
             PreparedStatement stmt = connect.prepareStatement(sql);
             rs = stmt.executeQuery();
@@ -105,6 +106,17 @@ public class conexion {
             return null;
         }
         return rs;
+    }
+    
+     public void commit(){
+        ResultSet rs = null;
+        String sql = "COMMIT";
+        try {
+            PreparedStatement stmt = connect.prepareStatement(sql);
+            rs = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -208,12 +208,12 @@ public class Empleados extends javax.swing.JFrame {
             Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-        public void cargarDep(){
+
+    public void cargarDep() {
         conexion cc = new conexion();
         com.mysql.jdbc.Connection cn = (com.mysql.jdbc.Connection) cc.conectar();
         String sql = "";
-        String nombre,codigo;
+        String nombre, codigo;
         sql = "select *from DEPARTAMENTOS";
         try {
             com.mysql.jdbc.Statement psd = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -222,7 +222,7 @@ public class Empleados extends javax.swing.JFrame {
                 //String codigo = rs.getString("CIU_COD").toString().trim();
                 nombre = rs.getString("NOM_PRO").toString().trim();
                 codigo = rs.getString("COD_PRO").toString().trim();
-                cbxProvincia.addItem(codigo+" "+nombre);
+                cbxProvincia.addItem(codigo + " " + nombre);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
@@ -250,7 +250,7 @@ public class Empleados extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
-    
+
     private boolean VerificarCedula(String cedula) {
         boolean cedulaCorrecta = false;
 
@@ -310,11 +310,10 @@ public class Empleados extends javax.swing.JFrame {
         } else if (!ced) {
             JOptionPane.showMessageDialog(null, "Cédula Incorrecta");
             txtCedula.requestFocus();
-        } else if (ai > (ac-18)){
+        } else if (ai > (ac - 18)) {
             JOptionPane.showMessageDialog(null, "No se permiten Menores de edad");
             calNacimiento.setFocusable(true);
         } else {
-            
 
             String CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP, GEN_EMP, FEC_NAC_EMP, NAC_EMP,
                     PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP;
@@ -708,7 +707,7 @@ public class Empleados extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 320, 380));
@@ -828,13 +827,12 @@ public class Empleados extends javax.swing.JFrame {
                                 .addGap(49, 49, 49)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtNacionalidad, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtClave, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                        .addComponent(txtSueldo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                        .addComponent(txtTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                        .addComponent(txtDireccion)
-                                        .addComponent(cbxProvincia, 0, 162, Short.MAX_VALUE)
-                                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                    .addComponent(txtClave, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                    .addComponent(txtSueldo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                    .addComponent(txtTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                    .addComponent(txtDireccion)
+                                    .addComponent(cbxProvincia, 0, 162, Short.MAX_VALUE)
+                                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(0, 23, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -917,6 +915,11 @@ public class Empleados extends javax.swing.JFrame {
         btnBorrar.setForeground(new java.awt.Color(255, 255, 255));
         btnBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/eliminar.png"))); // NOI18N
         btnBorrar.setText("     Borrar");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setBackground(new java.awt.Color(0, 0, 51));
         btnCancelar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -970,10 +973,10 @@ public class Empleados extends javax.swing.JFrame {
                 .addComponent(btnCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 170, 300));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 170, 340));
 
         tblEmpleados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1134,6 +1137,10 @@ public class Empleados extends javax.swing.JFrame {
     private void txtNombre1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombre1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombre1ActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments
