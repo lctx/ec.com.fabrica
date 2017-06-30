@@ -5,19 +5,11 @@
  */
 package ec.com.fabrica.interfaces;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -29,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author julio
  */
-public class Clientes extends javax.swing.JFrame {
+public class Proveedores extends javax.swing.JFrame {
 
     /**
      * Creates new form Empleados
@@ -40,7 +32,7 @@ public class Clientes extends javax.swing.JFrame {
     static ResultSet rs;
     PreparedStatement psd;
 
-    public Clientes() throws SQLException {
+    public Proveedores() throws SQLException {
         initComponents();
         cn.conectar();
         tab_model = (DefaultTableModel) tblClientes.getModel();
@@ -52,11 +44,10 @@ public class Clientes extends javax.swing.JFrame {
                 int fila = tblClientes.getSelectedRow();
                 if (tblClientes.getSelectedRow() != -1) {
                     txtCodigo.setText((String) (tblClientes.getValueAt(fila, 0)));
-                    txtRuc.setText((String) (tblClientes.getValueAt(fila, 1)));
-                    txtNombre.setText((String) (tblClientes.getValueAt(fila, 2)));
-                    txtDireccion.setText((String) (tblClientes.getValueAt(fila, 3)));
-                    txtTelefono.setText((String) (tblClientes.getValueAt(fila, 4)));
-                    txtEmail.setText((String) (tblClientes.getValueAt(fila, 5)));
+                    txtNombre.setText((String) (tblClientes.getValueAt(fila, 1)));
+                    txtDireccion.setText((String) (tblClientes.getValueAt(fila, 2)));
+                    txtTelefono.setText((String) (tblClientes.getValueAt(fila, 3)));
+                    txtEmail.setText((String) (tblClientes.getValueAt(fila, 4)));
                     cntActualizar();
                 }//To change body of generated methods, choose Tools | Templates.
             }
@@ -69,16 +60,16 @@ public class Clientes extends javax.swing.JFrame {
             tab_model.removeRow(i);
         }
     }
-    
+
     private void carga_tabla() throws SQLException {
         LimpiarTabla();
-        ResultSet rs = cn.consultar("COMPRADOR");
+        ResultSet rs = cn.consultar("PROVEEDOR");
         while (rs.next()) {
             // Se crea un array que será una de las filas de la tabla. 
-            Object[] fila = new Object[6]; // Hay tres columnas en la tabla
+            Object[] fila = new Object[5]; // Hay tres columnas en la tabla
 
             // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
             }
             // Se añade al modelo la fila completa.
@@ -92,14 +83,12 @@ public class Clientes extends javax.swing.JFrame {
         txtNombre.setEnabled(false);
         txtDireccion.setEnabled(false);
         txtTelefono.setEnabled(false);
-        txtRuc.setEnabled(false);
         txtEmail.setEnabled(false);
         txtCodigo.setText("");
         txtNombre.setText("");
         txtDireccion.setText("");
         txtDireccion.setText("");
         txtTelefono.setText("");
-        txtRuc.setText("");
         txtEmail.setText("");
         btnNuevo.setEnabled(true);
         btnGuardar.setEnabled(false);
@@ -114,7 +103,6 @@ public class Clientes extends javax.swing.JFrame {
         txtNombre.setEnabled(true);
         txtDireccion.setEnabled(true);
         txtTelefono.setEnabled(true);
-        txtRuc.setEnabled(true);
         txtEmail.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(true);
@@ -151,21 +139,17 @@ public class Clientes extends javax.swing.JFrame {
         } else if (txtDireccion.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "debe ingresar la direccion");
             txtDireccion.requestFocus();
-        } else if (txtRuc.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "debe ingresar el ruc");
-            txtRuc.requestFocus();
-        } else {
+        }else {
 
-            String[] codigos = {"COD_COM", "RUC_COM", "NOM_COM", "DIR_COM", "TEL_COM", "EMA_COM"};
+            String[] codigos = {"COD_PROV", "NOM_PROV", "DIR_PROV", "TEL_PROV", "EMA_PROV"};
             String[] campos = new String[codigos.length];
             campos[0] = txtCodigo.getText();
-            campos[1] = txtRuc.getText();
-            campos[2] = txtNombre.getText();
-            campos[3] = txtDireccion.getText();
-            campos[4] = txtTelefono.getText();
-            campos[5] = txtEmail.getText();
+            campos[1] = txtNombre.getText();
+            campos[2] = txtDireccion.getText();
+            campos[3] = txtTelefono.getText();
+            campos[4] = txtEmail.getText();
             cn.conectar();
-            cn.escribir("COMPRADOR", codigos, campos);
+            cn.escribir("PROVEEDOR", codigos, campos);
             cn.commit();
         }
     }
@@ -190,8 +174,6 @@ public class Clientes extends javax.swing.JFrame {
         jLabel35 = new javax.swing.JLabel();
         txtTelefono = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
-        txtRuc = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btnNuevo = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
@@ -206,7 +188,6 @@ public class Clientes extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(960, 440));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setOpaque(false);
@@ -280,20 +261,6 @@ public class Clientes extends javax.swing.JFrame {
         txtEmail.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         txtEmail.setForeground(new java.awt.Color(255, 255, 255));
 
-        txtRuc.setBackground(new java.awt.Color(0, 0, 51));
-        txtRuc.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtRuc.setForeground(new java.awt.Color(255, 255, 255));
-        txtRuc.setText("1231234");
-        txtRuc.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtRucKeyTyped(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Ruc*");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -310,18 +277,12 @@ public class Clientes extends javax.swing.JFrame {
                             .addComponent(txtEmail)
                             .addComponent(txtTelefono)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(90, 90, 90)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtRuc)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addComponent(txtDireccion, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))))
@@ -334,10 +295,6 @@ public class Clientes extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtRuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
@@ -354,10 +311,10 @@ public class Clientes extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 320, 220));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 320, 180));
 
         jPanel3.setOpaque(false);
 
@@ -467,28 +424,23 @@ public class Clientes extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Código", "Ruc", "Nombre", "Dirección", "Teléfono", "e_mail"
+                "Código", "Nombre", "Dirección", "Teléfono", "e_mail"
             }
         ));
         jScrollPane1.setViewportView(tblClientes);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 670, 130));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 670, 130));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/location.png"))); // NOI18N
         jLabel2.setText("Buscar");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 140, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 110, -1, -1));
 
         txtBuscar.setBackground(new java.awt.Color(0, 0, 51));
         txtBuscar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         txtBuscar.setForeground(new java.awt.Color(255, 255, 255));
-        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBuscarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, 220, -1));
+        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 150, 220, -1));
 
         jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/FondoAzul.png"))); // NOI18N
         jLabel18.setOpaque(true);
@@ -503,7 +455,7 @@ public class Clientes extends javax.swing.JFrame {
         try {
             carga_tabla();
         } catch (SQLException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Proveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -526,10 +478,6 @@ public class Clientes extends javax.swing.JFrame {
         // TODO add your handling code here:
         iniciarTodo();
     }//GEN-LAST:event_btnCancelarActionPerformed
-
-    private void txtRucKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRucKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRucKeyTyped
 
     private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
         if (txtTelefono.getText().length() <= 10) {
@@ -562,7 +510,7 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void txtCodigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyTyped
-        if (txtCodigo.getText().length() < 6) {
+        if (txtCodigo.getText().length() < 5) {
             if (!Character.isDigit(evt.getKeyChar())) {
                 evt.consume();
             }
@@ -573,19 +521,15 @@ public class Clientes extends javax.swing.JFrame {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         // TODO add your handling code here:
-        cn.eliminar("COMPRADOR", "COD_COM", txtCodigo.getText());
+        cn.eliminar("PROVEEDOR", "COD_PROV", txtCodigo.getText());
         cn.commit();
         try {
             carga_tabla();
         } catch (SQLException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Proveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
         iniciarTodo();
     }//GEN-LAST:event_btnBorrarActionPerformed
-
-    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBuscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -604,14 +548,16 @@ public class Clientes extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -619,9 +565,9 @@ public class Clientes extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new Clientes().setVisible(true);
+                    new Proveedores().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Proveedores.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -639,7 +585,6 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JPanel jPanel1;
@@ -651,7 +596,6 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtRuc;
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 }
