@@ -34,55 +34,73 @@ public class Clientes extends javax.swing.JFrame {
     /**
      * Creates new form Empleados
      */
-    DefaultTableModel model;
-    static Connection cn;
+    DefaultTableModel tab_model = new DefaultTableModel();
+    conexion cn = new conexion();
     static Statement st;
     static ResultSet rs;
     PreparedStatement psd;
 
-    public Clientes() {
+    public Clientes() throws SQLException {
         initComponents();
-        carTablaEmpleados("");
-        //iniciarTodo();
+        cn.conectar();
+        tab_model = (DefaultTableModel) tblClientes.getModel();
+        carga_tabla();
         tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 int fila = tblClientes.getSelectedRow();
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 if (tblClientes.getSelectedRow() != -1) {
                     txtCodigo.setText((String) (tblClientes.getValueAt(fila, 0)));
-                    txtNombre1.setText((String) (tblClientes.getValueAt(fila, 1)));
+                    txtRuc.setText((String) (tblClientes.getValueAt(fila, 1)));
+                    txtNombre.setText((String) (tblClientes.getValueAt(fila, 2)));
                     txtDireccion.setText((String) (tblClientes.getValueAt(fila, 3)));
-                    String n = String.valueOf(tblClientes.getValueAt(fila, 7));
-                    txtDireccion.setText((String) (tblClientes.getValueAt(fila, 10)));
-                    txtTelefono.setText((String) (tblClientes.getValueAt(fila, 12)));
+                    txtTelefono.setText((String) (tblClientes.getValueAt(fila, 4)));
+                    txtEmail.setText((String) (tblClientes.getValueAt(fila, 5)));
                     cntActualizar();
                 }//To change body of generated methods, choose Tools | Templates.
             }
         });
     }
 
-    public void conectar() {
-        try {
-            String url = "jdbc:oracle:thin:@localhost:1521:XE";
-            cn = DriverManager.getConnection(url, "FABRICA", "FABRICA");
-            st = cn.createStatement();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "FALLÓ LA CONEXIÓN \n" + e);
+    private void LimpiarTabla() {
+        int a = tab_model.getRowCount() - 1;
+        for (int i = a; i >= 0; i--) {
+            tab_model.removeRow(i);
         }
+    }
+    
+    private void carga_tabla() throws SQLException {
+        LimpiarTabla();
+        ResultSet rs = cn.consultar("COMPRADOR");
+        while (rs.next()) {
+            // Se crea un array que será una de las filas de la tabla. 
+            Object[] fila = new Object[6]; // Hay tres columnas en la tabla
+
+            // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
+            for (int i = 0; i < 6; i++) {
+                fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
+            }
+            // Se añade al modelo la fila completa.
+            tab_model.addRow(fila);
+        }
+
     }
 
     public void iniciarTodo() {
         txtCodigo.setEnabled(false);
-        txtNombre1.setEnabled(false);
+        txtNombre.setEnabled(false);
         txtDireccion.setEnabled(false);
         txtTelefono.setEnabled(false);
+        txtRuc.setEnabled(false);
+        txtEmail.setEnabled(false);
         txtCodigo.setText("");
-        txtNombre1.setText("");
+        txtNombre.setText("");
         txtDireccion.setText("");
         txtDireccion.setText("");
         txtTelefono.setText("");
+        txtRuc.setText("");
+        txtEmail.setText("");
         btnNuevo.setEnabled(true);
         btnGuardar.setEnabled(false);
         btnActualizar.setEnabled(false);
@@ -93,20 +111,23 @@ public class Clientes extends javax.swing.JFrame {
 
     public void cntNuevo() {
         txtCodigo.setEnabled(true);
-        txtNombre1.setEnabled(true);
+        txtNombre.setEnabled(true);
         txtDireccion.setEnabled(true);
         txtTelefono.setEnabled(true);
+        txtRuc.setEnabled(true);
+        txtEmail.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(true);
         btnActualizar.setEnabled(false);
         btnBorrar.setEnabled(false);
         btnCancelar.setEnabled(true);
         btnSalir.setEnabled(true);
+
     }
 
     public void cntActualizar() {
         txtCodigo.setEnabled(true);
-        txtNombre1.setEnabled(true);
+        txtNombre.setEnabled(true);
         txtDireccion.setEnabled(true);
         txtDireccion.setEnabled(true);
         txtTelefono.setEnabled(true);
@@ -120,175 +141,32 @@ public class Clientes extends javax.swing.JFrame {
 
     int tc;
 
-    private boolean VerificarCedula(String cedula) {
-        boolean cedulaCorrecta = false;
-
-        try {
-
-            if (cedula.length() == 10) {
-                int tercerDigito = Integer.valueOf(cedula.substring(2, 3));
-                if (tercerDigito < 6) {
-                    int[] coefValCedula = {2, 1, 2, 1, 2, 1, 2, 1, 2};
-                    int verificador = Integer.valueOf(cedula.substring(9, 10));
-                    int suma = 0;
-                    int digito = 0;
-                    for (int i = 0; i < (cedula.length() - 1); i++) {
-                        digito = Integer.valueOf(cedula.substring(i, i + 1)) * coefValCedula[i];
-                        suma += ((digito % 10) + (digito / 10));
-                    }
-                    if ((suma % 10 == 0) && (suma % 10 == verificador)) {
-                        cedulaCorrecta = true;
-                    } else if ((10 - (suma % 10)) == verificador) {
-                        cedulaCorrecta = true;
-                    } else {
-                        cedulaCorrecta = false;
-                    }
-                } else {
-                    cedulaCorrecta = false;
-                }
-            } else {
-                cedulaCorrecta = false;
-            }
-        } catch (NumberFormatException nfe) {
-            cedulaCorrecta = false;
-        } catch (Exception err) {
-            cedulaCorrecta = false;
-        }
-
-        if (!cedulaCorrecta) {
-            return false;
-        }
-        return cedulaCorrecta;
-    }
-
-    public void GuardarEmpleado() {
-        Boolean ced = VerificarCedula(txtCodigo.getText());
-        Date now = new Date(System.currentTimeMillis());
-        SimpleDateFormat date = new SimpleDateFormat("yyyy");
-        Integer ac = Integer.valueOf(String.valueOf(date.format(now)));
+    public void GuardarCliente() {
         if (txtCodigo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "debe ingresar la cédula");
+            JOptionPane.showMessageDialog(null, "debe ingresar el codigo");
             txtCodigo.requestFocus();
-        } else if (txtNombre1.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "debe ingresar el primer nombre");
-            txtNombre1.requestFocus();
+        } else if (txtNombre.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "debe ingresar el nombre");
+            txtNombre.requestFocus();
         } else if (txtDireccion.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "debe ingresar el apellido paterno");
+            JOptionPane.showMessageDialog(null, "debe ingresar la direccion");
             txtDireccion.requestFocus();
-        } else if (!ced) {
-            JOptionPane.showMessageDialog(null, "Cédula Incorrecta");
-            txtCodigo.requestFocus();
-        }  else {
+        } else if (txtRuc.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "debe ingresar el ruc");
+            txtDireccion.requestFocus();
+        } else {
 
-            String CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP, GEN_EMP, FEC_NAC_EMP, NAC_EMP,
-                    PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP;
-            Integer SUE_NOM;
-            String[] nom = txtNombre1.getText().replaceAll(" +", " ").split(" ");
-            String[] ape = txtDireccion.getText().replaceAll(" +", " ").split(" ");
-            CED_EMP = txtCodigo.getText();
-            APE1_EMP = " ";
-            NOM1_EMP = " ";
-            APE2_EMP = " ";
-            NOM2_EMP = " ";
-            if (nom.length == 2) {
-                NOM1_EMP = nom[0];
-                NOM2_EMP = nom[1];
-            } else if (nom.length == 1) {
-                NOM1_EMP = nom[0];
-            }
-            if (ape.length == 2) {
-                APE1_EMP = ape[0];
-                APE2_EMP = ape[1];
-            } else if (nom.length == 1) {
-                APE1_EMP = ape[0];
-            }
- 
-            String sql = "";
-            String nuevaFila;
-            try {
-                conectar();
-                sql = "SELECT * FROM empleado WHERE CED_EMP LIKE '%" + CED_EMP + "%'";
-                rs = st.executeQuery(sql);
-                while (rs.next()) {
-                    nuevaFila = rs.getString("CED_EMP");
-                    if (nuevaFila.equals(CED_EMP)) {
-                        JOptionPane.showMessageDialog(null, "El empleado ya existe");
-                    }
-                }
-                tblClientes.setModel(model);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex);
-            }
-
-            try {
-                conectar();
-                sql = "insert into empleado(CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP,GEN_EMP,"
-                        + "FEC_NAC_EMP, NAC_EMP, PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, SUE_NOM, CAR_EMP, CLA_EMP) "
-                        + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                psd = cn.prepareStatement(sql);
-
-                psd.setString(1, CED_EMP);
-                psd.setString(2, NOM1_EMP);
-                psd.setString(3, NOM2_EMP);
-                psd.setString(4, APE1_EMP);
-                psd.setString(5, APE2_EMP);
-                int n = psd.executeUpdate();
-                System.out.println(sql);
-                if (n > 0) {
-                    JOptionPane.showMessageDialog(null, "Se Insertó el Dato Correctamente");
-                }
-                rs.close();
-                cn.close();
-                iniciarTodo();
-            } catch (SQLException ex) {
-                for (int i = 0; i < tblClientes.getRowCount(); i++) {
-                    if (txtCodigo == model.getValueAt(i, 0)) {
-                        JOptionPane.showMessageDialog(null, "El empleado ya existe");
-                    }
-                }
-                JOptionPane.showMessageDialog(null, ex);
-            }
-        }
-
-    }
-
-    public void carTablaEmpleados(String Dato) {
-
-        String[] titulos = {"Cédula", "Nombre1", "Nombre2", "Apellido P", "Apellido M",
-            "TS", "Género", "Fecha N", "Nacionalid", "# Prov", "Dirección", "Celular", "Teléfono",
-            "Título", "Sueldo", "Cargo", "Clave"};
-        String[] registros = new String[17];
-        model = new DefaultTableModel(null, titulos);
-        try {
-            conectar();
-            String sql = "select *from empleado where CED_EMP LIKE '%" + Dato + "%'";
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                registros[0] = rs.getString("CED_EMP");
-                registros[1] = rs.getString("NOM1_EMP");
-                registros[2] = rs.getString("NOM2_EMP");
-                registros[3] = rs.getString("APE1_EMP");
-                registros[4] = rs.getString("APE2_EMP");
-                registros[5] = rs.getString("TIP_SAN_EMP");
-                registros[6] = rs.getString("GEN_EMP");
-                registros[7] = rs.getString("FEC_NAC_EMP");
-                registros[8] = rs.getString("NAC_EMP");
-                registros[9] = rs.getString("PRO_EMP");
-                registros[10] = rs.getString("DIR_EMP");
-                registros[11] = rs.getString("CEL_EMP");
-                registros[12] = rs.getString("TEL_EMP");
-                registros[13] = rs.getString("TIT_EMP");
-                registros[14] = rs.getString("SUE_NOM");
-                registros[15] = rs.getString("CAR_EMP");
-                registros[16] = rs.getString("CLA_EMP");
-                model.addRow(registros);
-            }
-            tblClientes.setModel(model);
-            rs.close();
-            cn.close();
-            iniciarTodo();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex);
+            String[] codigos = {"COD_COM", "RUC_COM", "NOM_COM", "DIR_COM", "TEL_COM", "EMA_COM"};
+            String[] campos = new String[codigos.length];
+            campos[0] = txtCodigo.getText();
+            campos[1] = txtRuc.getText();
+            campos[2] = txtNombre.getText();
+            campos[3] = txtDireccion.getText();
+            campos[4] = txtTelefono.getText();
+            campos[5] = txtEmail.getText();
+            cn.conectar();
+            cn.escribir("COMPRADOR", codigos, campos);
+            cn.commit();
         }
     }
 
@@ -303,7 +181,7 @@ public class Clientes extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         txtCodigo = new javax.swing.JTextField();
-        txtNombre1 = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
         txtDireccion = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
@@ -311,7 +189,7 @@ public class Clientes extends javax.swing.JFrame {
         jLabel30 = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
         txtTelefono = new javax.swing.JTextField();
-        txtCelular2 = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
         txtRuc = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -343,18 +221,18 @@ public class Clientes extends javax.swing.JFrame {
             }
         });
 
-        txtNombre1.setBackground(new java.awt.Color(0, 0, 51));
-        txtNombre1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtNombre1.setForeground(new java.awt.Color(255, 255, 255));
-        txtNombre1.setText("asdf asdf");
-        txtNombre1.addActionListener(new java.awt.event.ActionListener() {
+        txtNombre.setBackground(new java.awt.Color(0, 0, 51));
+        txtNombre.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtNombre.setForeground(new java.awt.Color(255, 255, 255));
+        txtNombre.setText("asdf asdf");
+        txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombre1ActionPerformed(evt);
+                txtNombreActionPerformed(evt);
             }
         });
-        txtNombre1.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombre1KeyTyped(evt);
+                txtNombreKeyTyped(evt);
             }
         });
 
@@ -398,9 +276,9 @@ public class Clientes extends javax.swing.JFrame {
             }
         });
 
-        txtCelular2.setBackground(new java.awt.Color(0, 0, 51));
-        txtCelular2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtCelular2.setForeground(new java.awt.Color(255, 255, 255));
+        txtEmail.setBackground(new java.awt.Color(0, 0, 51));
+        txtEmail.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtEmail.setForeground(new java.awt.Color(255, 255, 255));
 
         txtRuc.setBackground(new java.awt.Color(0, 0, 51));
         txtRuc.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -429,7 +307,7 @@ public class Clientes extends javax.swing.JFrame {
                             .addComponent(jLabel30))
                         .addGap(56, 56, 56)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCelular2)
+                            .addComponent(txtEmail)
                             .addComponent(txtTelefono)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,7 +323,7 @@ public class Clientes extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtRuc)
                             .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addComponent(txtNombre1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addComponent(txtDireccion, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
@@ -463,7 +341,7 @@ public class Clientes extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
-                    .addComponent(txtNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
@@ -475,7 +353,7 @@ public class Clientes extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
-                    .addComponent(txtCelular2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -521,6 +399,11 @@ public class Clientes extends javax.swing.JFrame {
         btnBorrar.setForeground(new java.awt.Color(255, 255, 255));
         btnBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/eliminar.png"))); // NOI18N
         btnBorrar.setText("     Borrar");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setBackground(new java.awt.Color(0, 0, 51));
         btnCancelar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -581,13 +464,10 @@ public class Clientes extends javax.swing.JFrame {
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
-
+                "Código", "Ruc", "Nombre", "Dirección", "Teléfono", "e_mail"
             }
         ));
         jScrollPane1.setViewportView(tblClientes);
@@ -614,8 +494,7 @@ public class Clientes extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
-        GuardarEmpleado();
-        carTablaEmpleados("");
+        GuardarCliente();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
@@ -643,7 +522,7 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRucKeyTyped
 
     private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
-        if (txtTelefono.getText().length() <= 9) {
+        if (txtTelefono.getText().length() <= 10) {
             if (!Character.isDigit(evt.getKeyChar())) {
                 evt.consume();
             }
@@ -653,32 +532,27 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoKeyTyped
 
     private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
-        if (txtDireccion.getText().length() < 15) {
-            if (!Character.isAlphabetic(evt.getKeyChar())) {
-                evt.consume();
-            }
-        } else {
+        if (txtDireccion.getText().length() > 30) {
             evt.consume();
         }
     }//GEN-LAST:event_txtDireccionKeyTyped
 
-    private void txtNombre1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombre1KeyTyped
-        if (txtNombre1.getText().length() < 15) {
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        if (txtNombre.getText().length() < 30) {
             if (!Character.isAlphabetic(evt.getKeyChar()) && evt.getKeyChar() != KeyEvent.VK_SPACE) {
                 evt.consume();
             }
         } else {
             evt.consume();
         }
-    }//GEN-LAST:event_txtNombre1KeyTyped
+    }//GEN-LAST:event_txtNombreKeyTyped
 
-    private void txtNombre1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombre1ActionPerformed
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombre1ActionPerformed
+    }//GEN-LAST:event_txtNombreActionPerformed
 
     private void txtCodigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyTyped
-        if (txtCodigo.getText().length() < 10) {
-            System.out.println(txtCodigo.getText().length());
+        if (txtCodigo.getText().length() < 6) {
             if (!Character.isDigit(evt.getKeyChar())) {
                 evt.consume();
             }
@@ -686,6 +560,18 @@ public class Clientes extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txtCodigoKeyTyped
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        // TODO add your handling code here:
+        cn.eliminar("COMPRADOR", "COD_COM", txtCodigo.getText());
+        cn.commit();
+        try {
+            carga_tabla();
+        } catch (SQLException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        iniciarTodo();
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -718,7 +604,11 @@ public class Clientes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Clientes().setVisible(true);
+                try {
+                    new Clientes().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -743,10 +633,10 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblClientes;
     private javax.swing.JTextField txtBuscar;
-    private javax.swing.JTextField txtCelular2;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDireccion;
-    private javax.swing.JTextField txtNombre1;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtRuc;
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
