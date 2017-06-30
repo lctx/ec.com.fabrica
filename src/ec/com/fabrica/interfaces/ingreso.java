@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package ec.com.fabrica.interfaces;
 
 import java.awt.Image;
@@ -22,27 +23,24 @@ public class ingreso extends javax.swing.JFrame {
     /**
      * Creates new form ingreso
      */
-    int xy, xx;
-    boolean mover = false;
-
     public ingreso() {
         initComponents();
-        setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         lblAviso.setVisible(false);
     }
-
+    
     @Override
     public Image getIconImage() {
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("ec/com/fabrica/imagenes/logo.png"));
         return retValue;
     }
-
+    
     public void ingresa() {
+        conexion cc = new conexion();
+        Connection cn = cc.conectar();
+        String sql = "";
+        sql = "select * from empleado";
         try {
-            conexion cc = new conexion();
-            Connection cn = cc.conectar();
-            String sql = "";
-            sql = "select * from empleado";
             Statement psd = cn.createStatement();
             ResultSet rs = psd.executeQuery(sql);
             String var1 = txtUsuario.getText();
@@ -104,7 +102,6 @@ public class ingreso extends javax.swing.JFrame {
         btnSalir.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnSalir.setForeground(new java.awt.Color(255, 255, 255));
         btnSalir.setText("Salir");
-        btnSalir.setToolTipText("Salir del sistema");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalirActionPerformed(evt);
@@ -154,30 +151,15 @@ public class ingreso extends javax.swing.JFrame {
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/letras2.png"))); // NOI18N
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, 240, 50));
 
-        btnlimpiar.setBackground(new java.awt.Color(0, 0, 51));
-        btnlimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/brocha.png"))); // NOI18N
-        btnlimpiar.setToolTipText("Limpiar Campos");
+        btnlimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/cruz.jpg"))); // NOI18N
         btnlimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnlimpiarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnlimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 140, 50, 50));
+        getContentPane().add(btnlimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 150, 20, 30));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/login4.png"))); // NOI18N
-        jLabel3.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jLabel3MouseDragged(evt);
-            }
-        });
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jLabel3MousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel3MouseReleased(evt);
-            }
-        });
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 480));
 
         pack();
@@ -188,39 +170,15 @@ public class ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
-        try {
-            ingresa();
-        } catch (Exception e) {
-
-        }
+        // TODO add your handling code here:
+        ingresa();
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void btnlimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlimpiarActionPerformed
+        // TODO add your handling code here:
         txtUsuario.setText("");
         txtClave.setText("");
     }//GEN-LAST:event_btnlimpiarActionPerformed
-
-    private void jLabel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MousePressed
-        if (evt.getButton() == 1) {
-            mover = true;
-            setOpacity((float) 0.8);
-            xx = evt.getX();
-            xy = evt.getY();
-        }
-    }//GEN-LAST:event_jLabel3MousePressed
-
-    private void jLabel3MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseDragged
-        if (mover == true) {
-            int x = evt.getXOnScreen();
-            int y = evt.getYOnScreen();
-            this.setLocation(x - xx, y - xy);
-        }
-    }//GEN-LAST:event_jLabel3MouseDragged
-
-    private void jLabel3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseReleased
-        setOpacity((float) 1.0);
-        mover = false;
-    }//GEN-LAST:event_jLabel3MouseReleased
 
     /**
      * @param args the command line arguments
@@ -251,7 +209,6 @@ public class ingreso extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 new ingreso().setVisible(true);
             }

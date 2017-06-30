@@ -3,17 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.com.fabrica.interfaces;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
 
 /**
  *
@@ -27,13 +26,12 @@ public class Menu extends javax.swing.JFrame {
         this.setExtendedState(Menu.MAXIMIZED_BOTH);
         menPrincipal.setVisible(true);
     }
-    
+
     @Override
     public Image getIconImage() {
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("ec/com/fabrica/imagenes/logo.png"));
         return retValue;
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -98,6 +96,11 @@ public class Menu extends javax.swing.JFrame {
         menArchivo.add(itmClientes);
 
         itmProveedores.setText("Proveedores");
+        itmProveedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmProveedoresActionPerformed(evt);
+            }
+        });
         menArchivo.add(itmProveedores);
 
         itmRoles.setText("Roles de Pago");
@@ -136,7 +139,7 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menReportesActionPerformed
-        
+
     }//GEN-LAST:event_menReportesActionPerformed
 
     private void itmEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmEmpleadosActionPerformed
@@ -148,10 +151,28 @@ public class Menu extends javax.swing.JFrame {
 
     private void itmClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmClientesActionPerformed
         // TODO add your handling code here:
-        Clientes e = new Clientes();
+        Clientes e = null;
+        try {
+            e = new Clientes();
+        } catch (SQLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         jDesktopPane1.add(e);
         e.show();
     }//GEN-LAST:event_itmClientesActionPerformed
+
+    private void itmProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmProveedoresActionPerformed
+
+        Proveedores e = null;
+        try {
+            // TODO add your handling code here:
+            e = new Proveedores();
+        } catch (SQLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        jDesktopPane1.add(e);
+        e.show();
+    }//GEN-LAST:event_itmProveedoresActionPerformed
 
     /**
      * @param args the command line arguments

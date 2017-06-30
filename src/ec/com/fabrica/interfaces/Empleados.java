@@ -44,6 +44,7 @@ public class Empleados extends javax.swing.JFrame {
         initComponents();
         cargarCiudades();
         carTablaEmpleados("");
+        cargarDep();
         //iniciarTodo();
         tblEmpleados.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -54,9 +55,9 @@ public class Empleados extends javax.swing.JFrame {
                 if (tblEmpleados.getSelectedRow() != -1) {
                     txtCedula.setText((String) (tblEmpleados.getValueAt(fila, 0)));
                     txtNombre1.setText((String) (tblEmpleados.getValueAt(fila, 1)));
-                    txtApellidop.setText((String) (tblEmpleados.getValueAt(fila, 3)));
-                    cbxTipoSangre.setSelectedItem(tblEmpleados.getValueAt(fila, 5).toString());
-                    String gen = (tblEmpleados.getValueAt(fila, 6).toString());
+                    txtApellidop.setText((String) (tblEmpleados.getValueAt(fila, 2)));
+                    cbxTipoSangre.setSelectedItem(tblEmpleados.getValueAt(fila, 3).toString());
+                    String gen = (tblEmpleados.getValueAt(fila, 4).toString());
                     String valgen = "";
                     if ("M".equals(gen)) {
                         valgen = "Masculino";
@@ -64,20 +65,20 @@ public class Empleados extends javax.swing.JFrame {
                         valgen = "Femenino";
                     }
                     cbxGenero.setSelectedItem(valgen);
-                    String n = String.valueOf(tblEmpleados.getValueAt(fila, 7));
+                    String n = String.valueOf(tblEmpleados.getValueAt(fila, 5));
                     try {
                         calNacimiento.setDate(df.parse(n));
                     } catch (ParseException ex) {
                         Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    txtNacionalidad.setText((String) (tblEmpleados.getValueAt(fila, 8)));
-                    devProvTab(Integer.valueOf(tblEmpleados.getValueAt(fila, 9).toString()));
-                    txtDireccion.setText((String) (tblEmpleados.getValueAt(fila, 10)));
-                    txtCelular.setText((String) (tblEmpleados.getValueAt(fila, 11)));
-                    txtTelefono.setText((String) (tblEmpleados.getValueAt(fila, 12)));
-                    txtTitulo.setText((String) (tblEmpleados.getValueAt(fila, 13)));
-                    txtSueldo.setText((String) (tblEmpleados.getValueAt(fila, 14)));
-                    txtClave.setText((String) (tblEmpleados.getValueAt(fila, 16)));
+                    txtNacionalidad.setText((String) (tblEmpleados.getValueAt(fila, 11)));
+                    devProvTab(Integer.valueOf(tblEmpleados.getValueAt(fila, 10).toString()));
+                    txtDireccion.setText((String) (tblEmpleados.getValueAt(fila, 6)));
+                    txtCelular.setText((String) (tblEmpleados.getValueAt(fila, 7)));
+                    txtCelular2.setText((String) (tblEmpleados.getValueAt(fila, 8)));
+                    txtTelefono.setText((String) (tblEmpleados.getValueAt(fila, 9)));
+                    txtTitulo.setText((String) (tblEmpleados.getValueAt(fila, 12)));
+                    txtClave.setText((String) (tblEmpleados.getValueAt(fila, 14)));
                     cntActualizar();
                 }//To change body of generated methods, choose Tools | Templates.
             }
@@ -110,7 +111,10 @@ public class Empleados extends javax.swing.JFrame {
         txtCelular.setEnabled(false);
         txtTelefono.setEnabled(false);
         txtTitulo.setEnabled(false);
-        txtSueldo.setEnabled(false);
+        cbxCargo.setEnabled(false);
+        cbxDepartamento.setEnabled(false);
+        cbxDepartamento.setSelectedItem(null);
+        cbxCargo.setSelectedItem(null);
         txtClave.setEnabled(false);
         txtCedula.setText("");
         txtNombre1.setText("");
@@ -127,7 +131,6 @@ public class Empleados extends javax.swing.JFrame {
         txtCelular.setText("");
         txtTelefono.setText("");
         txtTitulo.setText("");
-        txtSueldo.setText("");
         txtClave.setText("");
         btnNuevo.setEnabled(true);
         btnGuardar.setEnabled(false);
@@ -153,7 +156,10 @@ public class Empleados extends javax.swing.JFrame {
         txtCelular.setEnabled(true);
         txtTelefono.setEnabled(true);
         txtTitulo.setEnabled(true);
-        txtSueldo.setEnabled(true);
+        cbxCargo.setSelectedItem(null);
+        cbxCargo.setEnabled(true);
+        cbxDepartamento.setSelectedItem(null);
+        cbxDepartamento.setEnabled(true);
         txtClave.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(true);
@@ -176,7 +182,8 @@ public class Empleados extends javax.swing.JFrame {
         txtCelular.setEnabled(true);
         txtTelefono.setEnabled(true);
         txtTitulo.setEnabled(true);
-        txtSueldo.setEnabled(true);
+        cbxCargo.setEnabled(true);
+        cbxDepartamento.setEnabled(true);
         txtClave.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(false);
@@ -209,20 +216,76 @@ public class Empleados extends javax.swing.JFrame {
         }
     }
 
+    public void devDep(String cod) {
+        String nomc = "";
+        String codc = "";
+        String coddep = "";
+        try {
+            conectar();
+            String sql = "select *from cargos";
+            rs = st.executeQuery(sql);
+            while (rs.next()) {
+                if ((rs.getString("COD_CAR").toString().trim()) == cod) {
+                    nomc = rs.getString("NOM_CAR").toString().trim();
+                    codc = rs.getString("COD_CAR").toString().trim();
+                    coddep = rs.getString("COD_DEP").toString().trim();
+                }
+            }
+            rs.close();
+            cn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }try {
+            conectar();
+            String sql = "select *from departamentos";
+            rs = st.executeQuery(sql);
+            while (rs.next()) {
+                if ((rs.getString("COD_DEP").toString().trim()) == coddep) {
+                    nomc = rs.getString("NOM_CAR").toString().trim();
+                    codc = rs.getString("COD_CAR").toString().trim();
+                    coddep = rs.getString("COD_DEP").toString().trim();
+                }
+            }
+            rs.close();
+            cn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cbxProvincia.setSelectedItem(codc + "  " + nomc);
+    }
+
     public void cargarDep() {
-        conexion cc = new conexion();
-        com.mysql.jdbc.Connection cn = (com.mysql.jdbc.Connection) cc.conectar();
         String sql = "";
         String nombre, codigo;
-        sql = "select *from DEPARTAMENTOS";
         try {
-            com.mysql.jdbc.Statement psd = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet rs = psd.executeQuery(sql);
+            conectar();
+            sql = "select *from DEPARTAMENTOS";
+            rs = st.executeQuery(sql);
+            while (rs.next()) {
+                nombre = rs.getString("NOM_DEP").toString().trim();
+                codigo = rs.getString("COD_DEP").toString().trim();
+                cbxDepartamento.addItem(codigo + " " + nombre);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+    public void cargarCargos() {
+        String COD_DEP;
+        String[] tem = (cbxDepartamento.getSelectedItem().toString()).split(" ");
+        COD_DEP = tem[0];
+        String sql = "";
+        String nombre, codigo;
+        try {
+            conectar();
+            sql = "select *from CARGOS where COD_DEP = '" + COD_DEP + "'";
+            rs = st.executeQuery(sql);
             while (rs.next()) {
                 //String codigo = rs.getString("CIU_COD").toString().trim();
-                nombre = rs.getString("NOM_PRO").toString().trim();
-                codigo = rs.getString("COD_PRO").toString().trim();
-                cbxProvincia.addItem(codigo + " " + nombre);
+                nombre = rs.getString("NOM_CAR").toString().trim();
+                codigo = rs.getString("COD_CAR").toString().trim();
+                cbxCargo.addItem(codigo + " " + nombre);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
@@ -316,8 +379,7 @@ public class Empleados extends javax.swing.JFrame {
         } else {
 
             String CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP, GEN_EMP, FEC_NAC_EMP, NAC_EMP,
-                    PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP;
-            Integer SUE_NOM;
+                    PRO_EMP, DIR_EMP, CEL_EMP, CEL2_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP;
             String[] nom = txtNombre1.getText().replaceAll(" +", " ").split(" ");
             String[] ape = txtApellidop.getText().replaceAll(" +", " ").split(" ");
             CED_EMP = txtCedula.getText();
@@ -328,13 +390,13 @@ public class Empleados extends javax.swing.JFrame {
             if (nom.length == 2) {
                 NOM1_EMP = nom[0];
                 NOM2_EMP = nom[1];
-            } else if (nom.length == 1) {
+            } else if (nom.length < 2) {
                 NOM1_EMP = nom[0];
             }
             if (ape.length == 2) {
                 APE1_EMP = ape[0];
                 APE2_EMP = ape[1];
-            } else if (nom.length == 1) {
+            } else if (nom.length < 2) {
                 APE1_EMP = ape[0];
             }
             TIP_SAN_EMP = String.valueOf(cbxTipoSangre.getSelectedItem().toString());
@@ -344,9 +406,10 @@ public class Empleados extends javax.swing.JFrame {
             PRO_EMP = String.valueOf(cbxProvincia.getSelectedItem().toString().substring(0, tc));
             DIR_EMP = txtDireccion.getText();
             CEL_EMP = txtCelular.getText();
+            CEL2_EMP = txtCelular2.getText();
             TEL_EMP = txtTelefono.getText();
             TIT_EMP = txtTitulo.getText();
-            SUE_NOM = Integer.valueOf(String.valueOf(txtSueldo.getText()));
+            CAR_EMP = String.valueOf(cbxCargo.getSelectedItem().toString().substring(0, 3));
             CLA_EMP = txtClave.getText();
             String sql = "";
             String nuevaFila;
@@ -368,10 +431,9 @@ public class Empleados extends javax.swing.JFrame {
             try {
                 conectar();
                 sql = "insert into empleado(CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP,GEN_EMP,"
-                        + "FEC_NAC_EMP, NAC_EMP, PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, SUE_NOM, CAR_EMP, CLA_EMP) "
+                        + "FEC_NAC_EMP, NAC_EMP, PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP, CEL2_EMP) "
                         + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 psd = cn.prepareStatement(sql);
-
                 psd.setString(1, CED_EMP);
                 psd.setString(2, NOM1_EMP);
                 psd.setString(3, NOM2_EMP);
@@ -386,12 +448,13 @@ public class Empleados extends javax.swing.JFrame {
                 psd.setString(12, CEL_EMP);
                 psd.setString(13, TEL_EMP);
                 psd.setString(14, TIT_EMP);
-                psd.setInt(15, SUE_NOM);
-                psd.setString(17, CLA_EMP);
+                psd.setString(15, CAR_EMP);
+                psd.setString(16, CLA_EMP);
+                psd.setString(17, CEL2_EMP);
                 int n = psd.executeUpdate();
-                System.out.println(sql);
                 if (n > 0) {
                     JOptionPane.showMessageDialog(null, "Se Insertó el Dato Correctamente");
+                    System.out.println(sql);
                 }
                 rs.close();
                 cn.close();
@@ -410,10 +473,11 @@ public class Empleados extends javax.swing.JFrame {
 
     public void carTablaEmpleados(String Dato) {
 
-        String[] titulos = {"Cédula", "Nombre1", "Nombre2", "Apellido P", "Apellido M",
-            "TS", "Género", "Fecha N", "Nacionalid", "# Prov", "Dirección", "Celular", "Teléfono",
-            "Título", "Sueldo", "Cargo", "Clave"};
-        String[] registros = new String[17];
+        String[] titulos = {"Cédula", "Nombres", "Apellidos", "T Sangre", "Género", "Fecha N",
+            "Dirección", "Celular", "Celular 2", "Teléfono",
+            "# Provincia", "Nacionalidad", "Título", "Cargo", "Pin"};
+        String nom1, nom2, ape1, ape2;
+        String[] registros = new String[16];
         model = new DefaultTableModel(null, titulos);
         try {
             conectar();
@@ -421,28 +485,30 @@ public class Empleados extends javax.swing.JFrame {
             rs = st.executeQuery(sql);
             while (rs.next()) {
                 registros[0] = rs.getString("CED_EMP");
-                registros[1] = rs.getString("NOM1_EMP");
-                registros[2] = rs.getString("NOM2_EMP");
-                registros[3] = rs.getString("APE1_EMP");
-                registros[4] = rs.getString("APE2_EMP");
-                registros[5] = rs.getString("TIP_SAN_EMP");
-                registros[6] = rs.getString("GEN_EMP");
-                registros[7] = rs.getString("FEC_NAC_EMP");
-                registros[8] = rs.getString("NAC_EMP");
-                registros[9] = rs.getString("PRO_EMP");
-                registros[10] = rs.getString("DIR_EMP");
-                registros[11] = rs.getString("CEL_EMP");
-                registros[12] = rs.getString("TEL_EMP");
-                registros[13] = rs.getString("TIT_EMP");
-                registros[14] = rs.getString("SUE_NOM");
-                registros[15] = rs.getString("CAR_EMP");
-                registros[16] = rs.getString("CLA_EMP");
+                nom1 = rs.getString("NOM1_EMP");
+                nom2 = rs.getString("NOM2_EMP");
+                registros[1] = nom1 + " " + nom2;
+                ape1 = rs.getString("APE1_EMP");
+                ape2 = rs.getString("APE2_EMP");
+                registros[2] = ape1 + " " + ape2;
+                registros[3] = rs.getString("TIP_SAN_EMP");
+                registros[4] = rs.getString("GEN_EMP");
+                registros[5] = rs.getString("FEC_NAC_EMP");
+                registros[6] = rs.getString("DIR_EMP");
+                registros[7] = rs.getString("CEL_EMP");
+                registros[8] = rs.getString("CEL2_EMP");
+                registros[9] = rs.getString("TEL_EMP");
+                registros[10] = rs.getString("PRO_EMP");
+                registros[11] = rs.getString("NAC_EMP");
+                registros[12] = rs.getString("TIT_EMP");
+                registros[13] = rs.getString("CAR_EMP");
+                registros[14] = rs.getString("CLA_EMP");
                 model.addRow(registros);
             }
             tblEmpleados.setModel(model);
             rs.close();
             cn.close();
-            iniciarTodo();
+            //iniciarTodo();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
@@ -479,18 +545,16 @@ public class Empleados extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
-        jLabel31 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
         jLabel34 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
         txtTitulo = new javax.swing.JTextField();
-        txtSueldo = new javax.swing.JTextField();
         txtClave = new javax.swing.JTextField();
         cbxProvincia = new javax.swing.JComboBox();
         jLabel36 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
-        jComboBox2 = new javax.swing.JComboBox();
+        cbxDepartamento = new javax.swing.JComboBox();
+        cbxCargo = new javax.swing.JComboBox();
         jLabel27 = new javax.swing.JLabel();
         txtNacionalidad = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -707,10 +771,10 @@ public class Empleados extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 320, 380));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 320, 400));
 
         jPanel2.setOpaque(false);
 
@@ -721,10 +785,6 @@ public class Empleados extends javax.swing.JFrame {
         jLabel29.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel29.setForeground(new java.awt.Color(255, 255, 255));
         jLabel29.setText("Cargo");
-
-        jLabel31.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel31.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel31.setText("Sueldo");
 
         jLabel32.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel32.setForeground(new java.awt.Color(255, 255, 255));
@@ -758,16 +818,6 @@ public class Empleados extends javax.swing.JFrame {
             }
         });
 
-        txtSueldo.setBackground(new java.awt.Color(0, 0, 51));
-        txtSueldo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtSueldo.setForeground(new java.awt.Color(255, 255, 255));
-        txtSueldo.setText("245");
-        txtSueldo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtSueldoKeyTyped(evt);
-            }
-        });
-
         txtClave.setBackground(new java.awt.Color(0, 0, 51));
         txtClave.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         txtClave.setForeground(new java.awt.Color(255, 255, 255));
@@ -780,13 +830,23 @@ public class Empleados extends javax.swing.JFrame {
         jLabel36.setForeground(new java.awt.Color(255, 255, 255));
         jLabel36.setText("Departamento");
 
-        jComboBox1.setBackground(new java.awt.Color(0, 0, 51));
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jComboBox1.setForeground(new java.awt.Color(255, 255, 255));
+        cbxDepartamento.setBackground(new java.awt.Color(0, 0, 51));
+        cbxDepartamento.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        cbxDepartamento.setForeground(new java.awt.Color(255, 255, 255));
+        cbxDepartamento.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxDepartamentoItemStateChanged(evt);
+            }
+        });
+        cbxDepartamento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbxDepartamentoFocusLost(evt);
+            }
+        });
 
-        jComboBox2.setBackground(new java.awt.Color(0, 0, 51));
-        jComboBox2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jComboBox2.setForeground(new java.awt.Color(255, 255, 255));
+        cbxCargo.setBackground(new java.awt.Color(0, 0, 51));
+        cbxCargo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        cbxCargo.setForeground(new java.awt.Color(255, 255, 255));
 
         jLabel27.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel27.setForeground(new java.awt.Color(255, 255, 255));
@@ -811,29 +871,32 @@ public class Empleados extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel36)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel34)
+                                .addGap(100, 100, 100)
+                                .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel32)
-                                    .addComponent(jLabel33)
-                                    .addComponent(jLabel28)
-                                    .addComponent(jLabel31)
-                                    .addComponent(jLabel29)
-                                    .addComponent(jLabel34))
-                                .addGap(49, 49, 49)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtNacionalidad, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                    .addComponent(txtClave, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                    .addComponent(txtSueldo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                    .addComponent(txtTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                    .addComponent(txtDireccion)
-                                    .addComponent(cbxProvincia, 0, 162, Short.MAX_VALUE)
-                                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(0, 23, Short.MAX_VALUE))))
+                                .addComponent(jLabel29)
+                                .addGap(82, 82, 82)
+                                .addComponent(cbxCargo, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel32)
+                                        .addComponent(jLabel33)
+                                        .addComponent(jLabel28))
+                                    .addGap(49, 49, 49)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtNacionalidad)
+                                        .addComponent(txtTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                        .addComponent(txtDireccion)
+                                        .addComponent(cbxProvincia, 0, 162, Short.MAX_VALUE)))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel36)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cbxDepartamento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(43, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -856,24 +919,20 @@ public class Empleados extends javax.swing.JFrame {
                     .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31)
-                    .addComponent(txtSueldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel36)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxDepartamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel29)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxCargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel34)
                     .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 20, 330, 400));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 20, 350, 390));
 
         jPanel3.setOpaque(false);
 
@@ -915,11 +974,6 @@ public class Empleados extends javax.swing.JFrame {
         btnBorrar.setForeground(new java.awt.Color(255, 255, 255));
         btnBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ec/com/fabrica/imagenes/eliminar.png"))); // NOI18N
         btnBorrar.setText("     Borrar");
-        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBorrarActionPerformed(evt);
-            }
-        });
 
         btnCancelar.setBackground(new java.awt.Color(0, 0, 51));
         btnCancelar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -973,10 +1027,10 @@ public class Empleados extends javax.swing.JFrame {
                 .addComponent(btnCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 170, 340));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 170, 300));
 
         tblEmpleados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1044,7 +1098,7 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoKeyTyped
 
     private void txtNombre1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombre1KeyTyped
-        if (txtNombre1.getText().length() < 15) {
+        if (txtNombre1.getText().length() < 20) {
             if (!Character.isAlphabetic(evt.getKeyChar()) && evt.getKeyChar() != KeyEvent.VK_SPACE) {
                 evt.consume();
             }
@@ -1061,8 +1115,8 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtApellidopKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidopKeyTyped
-        if (txtApellidop.getText().length() < 15) {
-            if (!Character.isAlphabetic(evt.getKeyChar())) {
+        if (txtApellidop.getText().length() < 20) {
+            if (!Character.isAlphabetic(evt.getKeyChar()) && evt.getKeyChar() != KeyEvent.VK_SPACE) {
                 evt.consume();
             }
         } else {
@@ -1100,16 +1154,6 @@ public class Empleados extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtTituloKeyTyped
 
-    private void txtSueldoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSueldoKeyTyped
-        if (txtSueldo.getText().length() < 11) {
-            if (!Character.isDigit(evt.getKeyChar())) {
-                evt.consume();
-            }
-        } else {
-            evt.consume();
-        }
-    }//GEN-LAST:event_txtSueldoKeyTyped
-
     private void cbxGeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxGeneroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxGeneroActionPerformed
@@ -1138,9 +1182,15 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombre1ActionPerformed
 
-    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+    private void cbxDepartamentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxDepartamentoFocusLost
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBorrarActionPerformed
+        cbxCargo.removeAllItems();
+        cargarCargos();
+    }//GEN-LAST:event_cbxDepartamentoFocusLost
+
+    private void cbxDepartamentoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxDepartamentoItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxDepartamentoItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -1185,11 +1235,11 @@ public class Empleados extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
     private com.toedter.calendar.JDateChooser calNacimiento;
+    private javax.swing.JComboBox cbxCargo;
+    private javax.swing.JComboBox cbxDepartamento;
     private javax.swing.JComboBox cbxGenero;
     private javax.swing.JComboBox cbxProvincia;
     private javax.swing.JComboBox cbxTipoSangre;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
@@ -1203,7 +1253,6 @@ public class Empleados extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
@@ -1223,7 +1272,6 @@ public class Empleados extends javax.swing.JFrame {
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtNacionalidad;
     private javax.swing.JTextField txtNombre1;
-    private javax.swing.JTextField txtSueldo;
     private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField txtTitulo;
     // End of variables declaration//GEN-END:variables
