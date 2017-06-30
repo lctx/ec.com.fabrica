@@ -148,9 +148,9 @@ public class Menu extends javax.swing.JFrame {
 
     private void itmClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmClientesActionPerformed
         // TODO add your handling code here:
-        Clientes e = new Clientes();
-        jDesktopPane1.add(e);
-        e.show();
+        Clientes c = new Clientes();
+        jDesktopPane1.add(c);
+        c.show();
     }//GEN-LAST:event_itmClientesActionPerformed
 
     /**

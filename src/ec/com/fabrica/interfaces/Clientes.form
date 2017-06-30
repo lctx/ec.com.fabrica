@@ -311,7 +311,7 @@
                       <Component id="btnCancelar" alignment="0" max="32767" attributes="0"/>
                       <Component id="btnSalir" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

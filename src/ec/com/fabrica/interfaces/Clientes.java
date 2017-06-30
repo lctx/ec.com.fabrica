@@ -40,9 +40,8 @@ public class Clientes extends javax.swing.JFrame {
     static ResultSet rs;
     PreparedStatement psd;
 
-    public Clientes() throws SQLException {
+    public Clientes() {
         initComponents();
-        cn.conectar();
         tab_model = (DefaultTableModel) tblClientes.getModel();
         carga_tabla();
         tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -69,20 +68,24 @@ public class Clientes extends javax.swing.JFrame {
             tab_model.removeRow(i);
         }
     }
-    
-    private void carga_tabla() throws SQLException {
-        LimpiarTabla();
-        ResultSet rs = cn.consultar("COMPRADOR");
-        while (rs.next()) {
-            // Se crea un array que será una de las filas de la tabla. 
-            Object[] fila = new Object[6]; // Hay tres columnas en la tabla
 
-            // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
-            for (int i = 0; i < 6; i++) {
-                fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
+    private void carga_tabla() {
+        LimpiarTabla();
+        try {
+            ResultSet rs = cn.consultar("COMPRADOR");
+            while (rs.next()) {
+                // Se crea un array que será una de las filas de la tabla.
+                Object[] fila = new Object[6]; // Hay tres columnas en la tabla
+
+                // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
+                for (int i = 0; i < 6; i++) {
+                    fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
+                }
+                // Se añade al modelo la fila completa.
+                tab_model.addRow(fila);
             }
-            // Se añade al modelo la fila completa.
-            tab_model.addRow(fila);
+        } catch (SQLException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -440,7 +443,7 @@ public class Clientes extends javax.swing.JFrame {
                     .addComponent(btnBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -567,7 +570,7 @@ public class Clientes extends javax.swing.JFrame {
         cn.commit();
         try {
             carga_tabla();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
         }
         iniciarTodo();
@@ -606,7 +609,7 @@ public class Clientes extends javax.swing.JFrame {
             public void run() {
                 try {
                     new Clientes().setVisible(true);
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
