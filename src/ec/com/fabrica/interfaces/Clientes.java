@@ -42,7 +42,6 @@ public class Clientes extends javax.swing.JFrame {
 
     public Clientes() {
         initComponents();
-        cargarCiudades();
         carTablaEmpleados("");
         //iniciarTodo();
         tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -55,28 +54,9 @@ public class Clientes extends javax.swing.JFrame {
                     txtCodigo.setText((String) (tblClientes.getValueAt(fila, 0)));
                     txtNombre1.setText((String) (tblClientes.getValueAt(fila, 1)));
                     txtDireccion.setText((String) (tblClientes.getValueAt(fila, 3)));
-                    String gen = (tblClientes.getValueAt(fila, 6).toString());
-                    String valgen = "";
-                    if ("M".equals(gen)) {
-                        valgen = "Masculino";
-                    } else if ("F".equals(gen)) {
-                        valgen = "Femenino";
-                    }
-                    cbxGenero.setSelectedItem(valgen);
                     String n = String.valueOf(tblClientes.getValueAt(fila, 7));
-                    try {
-                        calNacimiento.setDate(df.parse(n));
-                    } catch (ParseException ex) {
-                        Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    txtNacionalidad.setText((String) (tblClientes.getValueAt(fila, 8)));
-                    devProvTab(Integer.valueOf(tblClientes.getValueAt(fila, 9).toString()));
                     txtDireccion.setText((String) (tblClientes.getValueAt(fila, 10)));
-                    txtCelular.setText((String) (tblClientes.getValueAt(fila, 11)));
                     txtTelefono.setText((String) (tblClientes.getValueAt(fila, 12)));
-                    txtTitulo.setText((String) (tblClientes.getValueAt(fila, 13)));
-                    txtSueldo.setText((String) (tblClientes.getValueAt(fila, 14)));
-                    txtClave.setText((String) (tblClientes.getValueAt(fila, 16)));
                     cntActualizar();
                 }//To change body of generated methods, choose Tools | Templates.
             }
@@ -97,37 +77,12 @@ public class Clientes extends javax.swing.JFrame {
         txtCodigo.setEnabled(false);
         txtNombre1.setEnabled(false);
         txtDireccion.setEnabled(false);
-        cbxTipoSangre.setSelectedItem(null);
-        cbxTipoSangre.setEnabled(false);
-        cbxGenero.setSelectedItem(null);
-        cbxGenero.setEnabled(false);
-        calNacimiento.setEnabled(false);
-        txtNacionalidad.setEnabled(false);
-        cbxProvincia.setSelectedItem(null);
-        cbxProvincia.setEnabled(false);
-        txtDireccion.setEnabled(false);
-        txtCelular.setEnabled(false);
         txtTelefono.setEnabled(false);
-        txtTitulo.setEnabled(false);
-        txtSueldo.setEnabled(false);
-        txtClave.setEnabled(false);
         txtCodigo.setText("");
         txtNombre1.setText("");
         txtDireccion.setText("");
-        cbxTipoSangre.setSelectedItem(null);
-        cbxTipoSangre.setEnabled(false);
-        cbxGenero.setSelectedItem(null);
-        cbxGenero.setEnabled(false);
-        calNacimiento.setEnabled(false);
-        txtNacionalidad.setText("");
-        cbxProvincia.setSelectedItem(null);
-        cbxProvincia.setEnabled(false);
         txtDireccion.setText("");
-        txtCelular.setText("");
         txtTelefono.setText("");
-        txtTitulo.setText("");
-        txtSueldo.setText("");
-        txtClave.setText("");
         btnNuevo.setEnabled(true);
         btnGuardar.setEnabled(false);
         btnActualizar.setEnabled(false);
@@ -140,20 +95,7 @@ public class Clientes extends javax.swing.JFrame {
         txtCodigo.setEnabled(true);
         txtNombre1.setEnabled(true);
         txtDireccion.setEnabled(true);
-        cbxTipoSangre.setSelectedItem(null);
-        cbxTipoSangre.setEnabled(true);
-        cbxGenero.setSelectedItem(null);
-        cbxGenero.setEnabled(true);
-        calNacimiento.setEnabled(true);
-        txtNacionalidad.setEnabled(true);
-        cbxProvincia.setSelectedItem(null);
-        cbxProvincia.setEnabled(true);
-        txtDireccion.setEnabled(true);
-        txtCelular.setEnabled(true);
         txtTelefono.setEnabled(true);
-        txtTitulo.setEnabled(true);
-        txtSueldo.setEnabled(true);
-        txtClave.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(true);
         btnActualizar.setEnabled(false);
@@ -166,17 +108,8 @@ public class Clientes extends javax.swing.JFrame {
         txtCodigo.setEnabled(true);
         txtNombre1.setEnabled(true);
         txtDireccion.setEnabled(true);
-        cbxTipoSangre.setEnabled(true);
-        cbxGenero.setEnabled(true);
-        calNacimiento.setEnabled(true);
-        txtNacionalidad.setEnabled(true);
-        cbxProvincia.setEnabled(true);
         txtDireccion.setEnabled(true);
-        txtCelular.setEnabled(true);
         txtTelefono.setEnabled(true);
-        txtTitulo.setEnabled(true);
-        txtSueldo.setEnabled(true);
-        txtClave.setEnabled(true);
         btnNuevo.setEnabled(false);
         btnGuardar.setEnabled(false);
         btnActualizar.setEnabled(true);
@@ -187,69 +120,6 @@ public class Clientes extends javax.swing.JFrame {
 
     int tc;
 
-    public void devProvTab(Integer cod) {
-        try {
-            conectar();
-            String sql = "select *from provincia";
-            rs = st.executeQuery(sql);
-            String nombre = "";
-            String codigo = "";
-            while (rs.next()) {
-                if (Integer.valueOf(rs.getString("COD_PRO").toString().trim()) == cod) {
-                    nombre = rs.getString("NOM_PRO").toString().trim();
-                    codigo = rs.getString("COD_PRO").toString().trim();
-                }
-            }
-            cbxProvincia.setSelectedItem(codigo + "  " + nombre);
-            rs.close();
-            cn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-        public void cargarDep(){
-        conexion cc = new conexion();
-        com.mysql.jdbc.Connection cn = (com.mysql.jdbc.Connection) cc.conectar();
-        String sql = "";
-        String nombre,codigo;
-        sql = "select *from DEPARTAMENTOS";
-        try {
-            com.mysql.jdbc.Statement psd = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet rs = psd.executeQuery(sql);
-            while (rs.next()) {
-                //String codigo = rs.getString("CIU_COD").toString().trim();
-                nombre = rs.getString("NOM_PRO").toString().trim();
-                codigo = rs.getString("COD_PRO").toString().trim();
-                cbxProvincia.addItem(codigo+" "+nombre);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        }
-    }
-
-    private void cargarCiudades() {
-        try {
-            conectar();
-            String sql = "select *from provincia";
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                String nombre = rs.getString("NOM_PRO").toString().trim();
-                String codigo = rs.getString("COD_PRO").toString().trim();
-                cbxProvincia.addItem(codigo + "  " + nombre);
-                if (codigo.length() == 1) {
-                    tc = 2;
-                } else if (codigo.length() == 2) {
-                    tc = 3;
-                }
-            }
-            rs.close();
-            cn.close();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        }
-    }
-    
     private boolean VerificarCedula(String cedula) {
         boolean cedulaCorrecta = false;
 
@@ -293,7 +163,6 @@ public class Clientes extends javax.swing.JFrame {
 
     public void GuardarEmpleado() {
         Boolean ced = VerificarCedula(txtCodigo.getText());
-        Integer ai = Integer.valueOf(String.valueOf(new SimpleDateFormat("yyyy").format(calNacimiento.getDate())));
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat date = new SimpleDateFormat("yyyy");
         Integer ac = Integer.valueOf(String.valueOf(date.format(now)));
@@ -309,11 +178,7 @@ public class Clientes extends javax.swing.JFrame {
         } else if (!ced) {
             JOptionPane.showMessageDialog(null, "Cédula Incorrecta");
             txtCodigo.requestFocus();
-        } else if (ai > (ac-18)){
-            JOptionPane.showMessageDialog(null, "No se permiten Menores de edad");
-            calNacimiento.setFocusable(true);
-        } else {
-            
+        }  else {
 
             String CED_EMP, NOM1_EMP, NOM2_EMP, APE1_EMP, APE2_EMP, TIP_SAN_EMP, GEN_EMP, FEC_NAC_EMP, NAC_EMP,
                     PRO_EMP, DIR_EMP, CEL_EMP, TEL_EMP, TIT_EMP, CAR_EMP, CLA_EMP;
@@ -337,17 +202,7 @@ public class Clientes extends javax.swing.JFrame {
             } else if (nom.length == 1) {
                 APE1_EMP = ape[0];
             }
-            TIP_SAN_EMP = String.valueOf(cbxTipoSangre.getSelectedItem().toString());
-            GEN_EMP = String.valueOf(cbxGenero.getSelectedItem().toString().substring(0, 1));
-            FEC_NAC_EMP = (new SimpleDateFormat("dd/MM/yyyy").format(calNacimiento.getDate()));
-            NAC_EMP = txtNacionalidad.getText();
-            PRO_EMP = String.valueOf(cbxProvincia.getSelectedItem().toString().substring(0, tc));
-            DIR_EMP = txtDireccion.getText();
-            CEL_EMP = txtCelular.getText();
-            TEL_EMP = txtTelefono.getText();
-            TIT_EMP = txtTitulo.getText();
-            SUE_NOM = Integer.valueOf(String.valueOf(txtSueldo.getText()));
-            CLA_EMP = txtClave.getText();
+ 
             String sql = "";
             String nuevaFila;
             try {
@@ -377,17 +232,6 @@ public class Clientes extends javax.swing.JFrame {
                 psd.setString(3, NOM2_EMP);
                 psd.setString(4, APE1_EMP);
                 psd.setString(5, APE2_EMP);
-                psd.setString(6, TIP_SAN_EMP);
-                psd.setString(7, GEN_EMP);
-                psd.setString(8, FEC_NAC_EMP);
-                psd.setString(9, NAC_EMP);
-                psd.setString(10, PRO_EMP);
-                psd.setString(11, DIR_EMP);
-                psd.setString(12, CEL_EMP);
-                psd.setString(13, TEL_EMP);
-                psd.setString(14, TIT_EMP);
-                psd.setInt(15, SUE_NOM);
-                psd.setString(17, CLA_EMP);
                 int n = psd.executeUpdate();
                 System.out.println(sql);
                 if (n > 0) {
@@ -484,6 +328,7 @@ public class Clientes extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(960, 440));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setOpaque(false);
@@ -732,7 +577,7 @@ public class Clientes extends javax.swing.JFrame {
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 170, 330));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 20, 170, 330));
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -747,7 +592,7 @@ public class Clientes extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblClientes);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 670, 130));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 670, 130));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
